@@ -1,0 +1,13 @@
+---
+# Namespace - A virtual cluster for organizing Kubernetes resources
+# Think of it as a container/folder for grouping related resources
+# Benefits: Resource isolation, access control, resource quotas
+
+apiVersion: v1
+kind: Namespace
+metadata:
+  name: learning
+  labels:
+    # Labels are key-value pairs for organizing and selecting resources
+    environment: learning
+    purpose: tutorial

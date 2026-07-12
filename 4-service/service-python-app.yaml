@@ -1,0 +1,38 @@
+---
+# Service for Python App - ClusterIP (Internal)
+apiVersion: v1
+kind: Service
+metadata:
+  name: python-app-service
+  namespace: learning
+  labels:
+    app: python-app
+spec:
+  type: ClusterIP
+  selector:
+    app: python-app
+  ports:
+  - name: http
+    port: 8000
+    targetPort: 8000
+    protocol: TCP
+
+---
+# Service for Python App - NodePort (External)
+apiVersion: v1
+kind: Service
+metadata:
+  name: python-app-nodeport
+  namespace: learning
+  labels:
+    app: python-app
+spec:
+  type: NodePort
+  selector:
+    app: python-app
+  ports:
+  - name: http
+    port: 8000
+    targetPort: 8000
+    nodePort: 30081
+    protocol: TCP

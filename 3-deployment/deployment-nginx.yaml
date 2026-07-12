@@ -1,0 +1,105 @@
+---
+# Deployment - Manages replicated application pods
+# Ensures desired number of pods are running
+# Handles rolling updates and rollbacks
+
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: nginx-app
+  namespace: learning
+  labels:
+    app: nginx-app
+    version: v1
+spec:
+  # Number of pod replicas to maintain
+  replicas: 2
+  
+  # How to identify pods this deployment manages
+  selector:
+    matchLabels:
+      app: nginx-app
+  
+  # Pod template - defines what pods will look like
+  template:
+    metadata:
+      labels:
+        app: nginx-app
+        tier: frontend
+    
+    spec:
+      # Container specification
+      containers:
+      - name: nginx
+        # Container image and tag
+        image: nginx:1.24-alpine
+        # When to pull image: Always, Never, IfNotPresent (default)
+        imagePullPolicy: IfNotPresent
+        
+        # Ports the container exposes
+        ports:
+        - name: http
+          containerPort: 80
+          protocol: TCP
+        
+        # Resource requests and limits
+        resources:
+          # Minimum resources guaranteed to the pod
+          requests:
+            memory: "64Mi"      # 64 Megabytes
+            cpu: "100m"         # 100 millicores (0.1 CPU)
+          # Maximum resources the pod can use
+          limits:
+            memory: "128Mi"     # 128 Megabytes
+            cpu: "200m"         # 200 millicores (0.2 CPU)
+        
+        # Environment variables from ConfigMap
+        envFrom:
+        - configMapRef:
+            name: app-config
+        
+        # Environment variables from Secret
+        - secretRef:
+            name: app-secrets
+        
+        # Liveness probe - restarts container if it's not responding
+        livenessProbe:
+          httpGet:
+            path: /
+            port: 80
+          initialDelaySeconds: 10    # Wait 10s before first check
+          periodSeconds: 10          # Check every 10s
+          timeoutSeconds: 5          # Timeout after 5s
+          failureThreshold: 3        # Restart after 3 failures
+        
+        # Readiness probe - stops traffic to container if not ready
+        readinessProbe:
+          httpGet:
+            path: /
+            port: 80
+          initialDelaySeconds: 5
+          periodSeconds: 5
+          timeoutSeconds: 3
+          failureThreshold: 2
+        
+        # Volume mounts
+        volumeMounts:
+        - name: config-volume
+          mountPath: /etc/nginx/conf.d/
+          readOnly: true
+      
+      # Volumes that can be mounted by containers
+      volumes:
+      - name: config-volume
+        configMap:
+          name: app-config
+          items:
+          - key: nginx.conf
+            path: custom.conf
+
+  # Strategy for updating pods
+  strategy:
+    type: RollingUpdate
+    rollingUpdate:
+      maxSurge: 1        # Maximum 1 extra pod during update
+      maxUnavailable: 0  # Minimum pods always available

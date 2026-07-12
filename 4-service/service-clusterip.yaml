@@ -1,0 +1,29 @@
+---
+# Service ClusterIP - Internal access only (default)
+# Used for internal communication between pods/services
+# Not accessible from outside the cluster
+
+apiVersion: v1
+kind: Service
+metadata:
+  name: nginx-service
+  namespace: learning
+  labels:
+    app: nginx-app
+    service-type: internal
+spec:
+  type: ClusterIP  # Default service type
+  
+  # Label selector to find pods to route traffic to
+  selector:
+    app: nginx-app
+  
+  # Port mappings
+  ports:
+  - name: http
+    port: 80           # Port exposed by this service
+    targetPort: 80     # Container port to route to
+    protocol: TCP
+  
+  # Session affinity - stick client to same pod
+  sessionAffinity: None  # or "ClientIP" to stick to pod

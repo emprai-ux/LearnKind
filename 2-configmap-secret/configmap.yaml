@@ -1,0 +1,36 @@
+---
+# ConfigMap - Store non-sensitive configuration data
+# Used to separate configuration from the container image
+# Data is stored as key-value pairs (can be multiple files too)
+
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: app-config
+  namespace: learning
+  labels:
+    app: hello-app
+    type: config
+data:
+  # Simple key-value configuration
+  APP_NAME: "HelloApp"
+  LOG_LEVEL: "INFO"
+  ENVIRONMENT: "learning"
+  
+  # File-like content (multi-line)
+  app.properties: |
+    app.version=1.0.0
+    app.debug=false
+    app.max.connections=100
+    app.timeout.seconds=30
+  
+  # Another config file
+  nginx.conf: |
+    server {
+      listen 80;
+      server_name _;
+      location / {
+        root /usr/share/nginx/html;
+        index index.html index.htm;
+      }
+    }

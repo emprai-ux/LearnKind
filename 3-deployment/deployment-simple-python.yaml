@@ -1,0 +1,73 @@
+---
+# Simple Python Application Deployment - For Learning
+# A minimal deployment to understand Kubernetes concepts
+
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: python-app
+  namespace: learning
+  labels:
+    app: python-app
+    version: v1
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: python-app
+  
+  template:
+    metadata:
+      labels:
+        app: python-app
+    
+    spec:
+      containers:
+      - name: python-app
+        # Small image for learning
+        image: python:3.11-slim
+        imagePullPolicy: IfNotPresent
+        
+        ports:
+        - containerPort: 8000
+          name: http
+        
+        # Simple Python HTTP server
+        command:
+        - python
+        - -m
+        - http.server
+        - "8000"
+        - --directory
+        - /app
+        
+        # Basic resource limits for learning
+        resources:
+          requests:
+            memory: "32Mi"
+            cpu: "50m"
+          limits:
+            memory: "64Mi"
+            cpu: "100m"
+        
+        # Simple liveness check
+        livenessProbe:
+          tcpSocket:
+            port: 8000
+          initialDelaySeconds: 5
+          periodSeconds: 10
+        
+        # Environment variables for learning
+        env:
+        - name: PYTHONUNBUFFERED
+          value: "1"
+        - name: LOG_LEVEL
+          valueFrom:
+            configMapKeyRef:
+              name: app-config
+              key: LOG_LEVEL
+        - name: APP_NAME
+          valueFrom:
+            configMapKeyRef:
+              name: app-config
+              key: APP_NAME
