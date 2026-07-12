@@ -1,0 +1,94 @@
+# ==========================
+# General Linux
+# ==========================
+alias l='ls -lrt'
+alias ll='ls -alh'
+alias la='ls -A'
+alias h='history'
+
+# ==========================
+# Kubernetes
+# ==========================
+alias k='kubectl'
+alias ku='kubectl'
+
+# Cluster
+alias kno='kubectl get nodes'
+alias kns='kubectl get namespaces'
+alias kctx='kubectl config current-context'
+alias kctxs='kubectl config get-contexts'
+
+# Pods
+alias pod='kubectl get pods'
+alias poda='kubectl get pods -A'
+alias pow='kubectl get pods -w'
+alias kdp='kubectl describe pod'
+alias kl='kubectl logs'
+alias klf='kubectl logs -f'
+alias kdelp='kubectl delete pod'
+
+# Deployments
+alias kgd='kubectl get deployments'
+alias kdd='kubectl describe deployment'
+alias kedit='kubectl edit deployment'
+
+# Services
+alias kgs='kubectl get svc'
+alias kds='kubectl describe svc'
+
+# Namespaces
+alias ns='kubectl config set-context --current --namespace'
+
+# ConfigMaps / Secrets
+alias cm='kubectl get configmaps'
+alias secret='kubectl get secrets'
+
+# Events
+alias ke='kubectl get events --sort-by=.metadata.creationTimestamp'
+
+# All resources
+alias kga='kubectl get all'
+alias kgaa='kubectl get all -A'
+
+# ==========================
+# Kind
+# ==========================
+alias kc='kind create cluster --name devops'
+alias kd='kind delete cluster --name devops'
+alias kk='kind get clusters'
+
+# ==========================
+# Helm
+# ==========================
+alias hi='helm install'
+alias hu='helm upgrade'
+alias hl='helm list'
+alias hs='helm search repo'
+alias hr='helm repo list'
+
+# ==========================
+# Docker
+# ==========================
+alias dps='docker ps'
+alias dpsa='docker ps -a'
+alias di='docker images'
+alias drm='docker rm'
+alias drmi='docker rmi'
+
+# ==========================
+# Git
+# ==========================
+alias gs='git status'
+alias ga='git add'
+alias gc='git commit'
+alias gp='git push'
+alias gl='git pull'
+alias gb='git branch'
+alias gco='git checkout'
+alias glog='git log --oneline --graph --decorate'
+
+## ADDED my me:
+alias myimg="kubectl get deployment $1 -o jsonpath='{.spec.template.spec.containers[*].image}'"
+alias mycont="kubectl get deployment $1 -o jsonpath='{range .spec.template.spec.containers[*]}{.name}{"\t"}{.image}{"\n"}{end}'"
+alias myns="kubectl config view --minify --output 'jsonpath={..namespace}'"
+
